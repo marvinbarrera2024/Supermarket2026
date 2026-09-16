@@ -1,0 +1,56 @@
+﻿@page "/products"
+@using Supermarket.DTO
+@using Supermarket.Services
+
+<h3>Lista de Productos</h3>
+
+@if (products == null)
+{
+    <p><em>Cargando...</em></p>
+}
+else
+{
+<table class="table">
+    <thead>
+        <tr>
+            <th>Nombre</th> 
+            <th>Precio</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var product in products)
+        {
+            <tr>
+                <td>@product.ProductName</td>
+                <td>@product.ProductPrice</td>
+            </tr>
+        }
+    </tbody>
+</table>
+}
+
+
+@if (!string.IsNullOrEmpty(errorMessage))
+{
+   <div class="alert alert-danger">@errorMessage</div> 
+}
+
+
+@inject ProductService productService
+@code {
+    private List<ProductResponse> products;
+    private string errorMessage;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            products = await productService.GetProducts();
+        }
+        catch (Exception ex)
+        {
+            errorMessage = ex.Message;
+        }
+    }
+
+}
